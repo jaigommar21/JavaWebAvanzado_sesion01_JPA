@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.5" xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/orm http://www.eclipse.org/eclipselink/xsds/eclipselink_orm_2_5.xsd">
+    <named-query name="Categoria.findAll">
+        <query>select c from Categoria c</query>
+    </named-query>
+    <named-query name="DetallePedido.findAll">
+        <query>select d from DetallePedido d</query>
+    </named-query>
+    <named-query name="Pedido.findAll">
+        <query>select p from Pedido p</query>
+    </named-query>
+    <named-query name="Producto.findAll">
+        <query>select p from Producto p</query>
+    </named-query>
+    <named-query name="Rol.findAll">
+        <query>select r from Rol r</query>
+    </named-query>
+    <named-query name="Usuario.findAll">
+        <query>select u from Usuario u</query>
+    </named-query>
+	<entity class="model.Categoria" access="VIRTUAL">
+		<attributes>
+			<id name="idcategoria" attribute-type="int">
+			</id>
+			<basic name="descripcion" attribute-type="String">
+			</basic>
+			<basic name="nombre" attribute-type="String">
+			</basic>
+			<one-to-many name="productos" mapped-by="categoria" target-entity="model.Producto" attribute-type="java.util.List">
+			</one-to-many>
+		</attributes>
+	</entity>
+	<entity class="model.DetallePedido" access="VIRTUAL">
+		<table name="detalle_pedido"/>
+		<attributes>
+			<embedded-id name="id" attribute-type="model.DetallePedidoPK"></embedded-id>
+			<basic name="cantidad" attribute-type="int">
+			</basic>
+			<basic name="precio" attribute-type="double">
+			</basic>
+			<many-to-one name="pedido" target-entity="model.Pedido">
+				<join-column name="idpedido"/>
+			</many-to-one>
+			<many-to-one name="producto" target-entity="model.Producto">
+				<join-column name="idproducto"/>
+			</many-to-one>
+		</attributes>
+	</entity>
+	<entity class="model.Pedido" access="VIRTUAL">
+		<attributes>
+			<id name="idpedido" attribute-type="int">
+			</id>
+			<basic name="estado" attribute-type="String">
+			</basic>
+			<basic name="fecha" attribute-type="java.util.Date">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="pedidocol" attribute-type="String">
+			</basic>
+			<basic name="total" attribute-type="double">
+			</basic>
+			<many-to-one name="usuario" target-entity="model.Usuario">
+				<join-column name="idusuario"/>
+			</many-to-one>
+			<one-to-many name="detallePedidos" mapped-by="pedido" target-entity="model.DetallePedido" attribute-type="java.util.List">
+			</one-to-many>
+		</attributes>
+	</entity>
+	<entity class="model.Producto" access="VIRTUAL">
+		<attributes>
+			<id name="idproducto" attribute-type="int">
+			</id>
+			<basic name="descripcion" attribute-type="String">
+			</basic>
+			<basic name="imagen" attribute-type="String">
+			</basic>
+			<basic name="importancia" attribute-type="int">
+			</basic>
+			<basic name="nombre" attribute-type="String">
+			</basic>
+			<basic name="precio" attribute-type="java.math.BigDecimal">
+			</basic>
+			<basic name="stock" attribute-type="int">
+			</basic>
+			<many-to-one name="categoria" target-entity="model.Categoria">
+				<join-column name="idcategoria"/>
+			</many-to-one>
+			<one-to-many name="detallePedidos" mapped-by="producto" target-entity="model.DetallePedido" attribute-type="java.util.List">
+			</one-to-many>
+		</attributes>
+	</entity>
+	<entity class="model.Rol" access="VIRTUAL">
+		<attributes>
+			<id name="idrolNombre" attribute-type="String">
+				<column name="idrol_nombre"/>
+			</id>
+			<basic name="descripcion" attribute-type="String">
+			</basic>
+			<many-to-many name="usuarios" mapped-by="rols" target-entity="model.Usuario" attribute-type="java.util.List">
+			</many-to-many>
+		</attributes>
+	</entity>
+	<entity class="model.Usuario" access="VIRTUAL">
+		<attributes>
+			<id name="idusuario" attribute-type="int">
+			</id>
+			<basic name="clave" attribute-type="String">
+			</basic>
+			<basic name="direccion" attribute-type="String">
+			</basic>
+			<basic name="email" attribute-type="String">
+			</basic>
+			<basic name="estado" attribute-type="String">
+			</basic>
+			<basic name="materno" attribute-type="String">
+			</basic>
+			<basic name="nombres" attribute-type="String">
+			</basic>
+			<basic name="paterno" attribute-type="String">
+			</basic>
+			<basic name="telefono" attribute-type="String">
+			</basic>
+			<one-to-many name="pedidos" mapped-by="usuario" target-entity="model.Pedido" attribute-type="java.util.List">
+			</one-to-many>
+			<many-to-many name="rols" target-entity="model.Rol" attribute-type="java.util.List">
+				<join-table name="usuario_rol">
+					<join-column name="idusuario"/>
+					<inverse-join-column name="rol_idrol_nombre"/>
+				</join-table>
+			</many-to-many>
+		</attributes>
+	</entity>
+	<embeddable class="model.DetallePedidoPK" access="VIRTUAL">
+		<attributes>
+			<basic name="iddetallePedido" attribute-type="int">
+				<column name="iddetalle_pedido"/>
+			</basic>
+			<basic name="idpedido" attribute-type="int">
+				<column insertable="false" updatable="false"/>
+			</basic>
+		</attributes>
+	</embeddable>
+</entity-mappings>
